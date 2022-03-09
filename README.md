@@ -1,4 +1,4 @@
-# Dashboard-for-Design-of-an-Aquaponics-System
+# Aquaponics System Dashboard
 
 This is a dashboard for monitoring different sensor values from an aquaponics system using Google Cloud IoT, MongoDB and Node.JS
 
