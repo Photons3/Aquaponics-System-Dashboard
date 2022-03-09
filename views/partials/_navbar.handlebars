@@ -1,0 +1,38 @@
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-3">
+    <div class="container">
+      <a class="navbar-brand" href="/"><i class="fas fa-seedling"></i>&nbsp Aquaponics System &nbsp<i class="fas fa-fish"></i></a></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+    
+      <div class="navbar-collapse collapse show" id="navbarSupportedContent" style="">
+        <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+          <li class="nav-item">
+                    <a class="nav-link" href="/monitoring">Sensor Values</a>
+                </li>
+               <li class="nav-item">
+                    <a class="nav-link" href="/controls">Control System</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown03" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
+            <ul class="dropdown-menu" aria-labelledby="dropdown03">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+          </li>
+        </ul>
+        {{#if logged_in}}
+        <form class="form-inline my-2 my-lg-0" action="/logout" method="POST">
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sign Out</button>
+        </form>
+        {{else}}
+        <form class="form-inline my-2 my-lg-0" action="/login" method="POST">
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sign In</button>
+        </form>
+        {{/if}}
+      </div>
+    
+    </div>
+</nav>

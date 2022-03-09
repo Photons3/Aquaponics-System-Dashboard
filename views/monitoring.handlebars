@@ -1,0 +1,469 @@
+<div class="container">
+    {{> temperature}}
+    {{> phLevel}}
+    {{> dissolvedOxygen}}
+</div>
+ 
+<script>
+
+    /***** GRAPHING AND WEBSOCKETS *****/
+    $(function(){
+        
+        const socket = io();
+
+        // GRAPHING
+        // TEMPERATURE
+        const ctx1 = $('#temp-chart');
+        const tempChart = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    fill: false,
+                    label: 'Temperature',
+                    data: [],
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    borderWidth: 1,
+                    cubicInterpolationMode: 'monotone'
+                },
+                {
+                    fill: false,
+                    label: 'Average',
+                    data: [],
+                    backgroundColor: 'rgb(54, 162, 235)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    borderWidth: 1,
+                    cubicInterpolationMode: 'monotone'
+                }],
+                sum: 0
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Temperature (°C)'
+                },
+                scales: {
+                    x: {
+                        ticks: {display: false}
+                    },
+                    y: {
+                        ticks: {suggestedMin: 15, suggestedMax: 37}
+                    }
+                }
+            }
+        });
+
+        //TEMPERATURE PREDICTION
+        const ctx2 = $('#temp-chart-predict');
+        const tempChartPredict = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    fill: false,
+                    label: 'Prediction',
+                    data: [],
+                    backgroundColor: 'rgb(153, 102, 255)',
+                    borderColor: 'rgb(153, 102, 255)',
+                    borderWidth: 1,
+                    cubicInterpolationMode: 'monotone'
+                }],
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Temperature (°C)'
+                },
+                scales: {
+                    y: {
+                        ticks: {suggestedMin: 15, suggestedMax: 37}
+                    }
+                }
+            }
+        });
+        
+        // PH LEVEL
+        const ctx3 = $('#pHLevel-chart');
+        const pHLevelChart = new Chart(ctx3, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    fill: false,
+                    label: 'PH Level',
+                    data: [],
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    borderWidth: 1,
+                    cubicInterpolationMode: 'monotone'
+                },
+                {
+                    fill: false,
+                    label: 'Average',
+                    data: [],
+                    backgroundColor: 'rgb(54, 162, 235)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    borderWidth: 1,
+                    cubicInterpolationMode: 'monotone'
+                }],
+                sum: 0
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'PH Level'
+                },
+                scales: {
+                    x: {
+                        ticks: {display: false}
+                    },
+                    y: {
+                        ticks: {suggestedMin: 15, suggestedMax: 37}
+                    }
+                }
+            }
+        });
+
+        //PH LEVEL PREDICTION
+        const ctx4 = $('#pHLevel-chart-predict');
+        const pHLevelChartPredict = new Chart(ctx4, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    fill: false,
+                    label: 'Prediction',
+                    data: [],
+                    backgroundColor: 'rgb(153, 102, 255)',
+                    borderColor: 'rgb(153, 102, 255)',
+                    borderWidth: 1,
+                    cubicInterpolationMode: 'monotone'
+                }],
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'PH Level'
+                },
+                scales: {
+                    y: {
+                        ticks: {suggestedMin: 15, suggestedMax: 37}
+                    }
+                }
+            }
+        });
+        
+        // DO LEVEL
+        const ctx5 = $('#DOLevel-chart');
+        const DOLevelChart = new Chart(ctx5, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    fill: false,
+                    label: 'Dissolved Oxygen Level',
+                    data: [],
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    borderWidth: 1,
+                    cubicInterpolationMode: 'monotone'
+                },
+                {
+                    fill: false,
+                    label: 'Average',
+                    data: [],
+                    backgroundColor: 'rgb(54, 162, 235)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    borderWidth: 1,
+                    cubicInterpolationMode: 'monotone'
+                }
+                ],
+                sum: 0
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Dissolved Oxygen (ppm)'
+                },
+                scales: {
+                    x: {
+                        ticks: {display: false}
+                    },
+                    y: {
+                        ticks: {suggestedMin: 15, suggestedMax: 37}
+                    }
+                }
+            }
+        });
+
+        //DO LEVEL PREDICTION
+        const ctx6 = $('#DOLevel-chart-predict');
+        const DOLevelChartPredict = new Chart(ctx6, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    fill: false,
+                    label: 'Prediction',
+                    data: [],
+                    backgroundColor: 'rgb(153, 102, 255)',
+                    borderColor: 'rgb(153, 102, 255)',
+                    borderWidth: 1,
+                    cubicInterpolationMode: 'monotone'
+                }],
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Dissolved Oxygen (ppm)'
+                },
+                scales: {
+                    y: {
+                        ticks: {suggestedMin: 15, suggestedMax: 37}
+                    }
+                }
+            }
+        });
+
+        //TIME FORMMATING FUNCTION
+        function getTimeofData(ValueOfDate, appendSeconds = true){
+            timeOfData = new Date(ValueOfDate*1000);
+            hours = timeOfData.getHours().toString();
+            minutes = timeOfData.getMinutes().toString().padStart(2, '0');
+            seconds = timeOfData.getSeconds().toString().padStart(2, '0');
+            if(appendSeconds == true) return hours + ":" + minutes + ":" + seconds;
+            else return hours + ":" + minutes;
+        }
+
+        /********** WEBSOCKET EVENTS CAPTURING ************/
+        
+        //*********** CHART WHEN OPENING THE WEBSITE ***********//
+        socket.emit('monitoringConnection'); //SEND A REQUEST TO THE SERVER ON NEW CONNECTION
+
+        socket.on('lastsensorvalues', (values)=>{
+            // PUSH VALUES TO THE PLOT
+            if(tempChart.data.labels.length == 0 && values.length > 0 ){
+                values.reverse();
+                values.forEach(value=>{
+                    //THIS WILL SHIFT THE LAST VALUE OF THE ARRAY SO THAT ONLY 1 HOUR IS SHOWN
+                    dataLength = tempChart.data.labels.length;
+                    dataMax = 30;
+                    if (dataLength > dataMax){
+                        //REMOVE THE FIRST VALUE FROM THE SUM TO GET THE RIGHT AVERAGE
+                        removedValueTemp = tempChart.data.datasets[0].data.shift();
+                        tempChart.data.sum = tempChart.data.sum - removedValueTemp;
+                        tempChart.data.datasets[1].data.shift();
+                        tempChart.data.labels.shift();
+
+                        removedValuepHLevel = pHLevelChart.data.datasets[0].data.shift();
+                        pHLevelChart.data.sum = pHLevelChart.data.sum - removedValuepHLevel;
+                        pHLevelChart.data.datasets[1].data.shift();
+                        pHLevelChart.data.labels.shift();
+
+                        removedValueDOLevel = DOLevelChart.data.datasets[0].data.shift();
+                        DOLevelChart.data.sum = DOLevelChart.data.sum - removedValueDOLevel;
+                        DOLevelChart.data.datasets[1].data.shift();
+                        DOLevelChart.data.labels.shift();
+                    }
+
+                    //FOR SENSOR CHARTS
+                    tempChart.data.datasets[0].data.push(value.temperature);
+                    tempChart.data.sum = parseInt(tempChart.data.sum) + parseInt(value.temperature);
+                    tempChart.data.labels.push(getTimeofData(value.date));
+
+                    tempChart.data.datasets[1].data.push(parseInt(tempChart.data.sum)/tempChart.data.datasets[0].data.length);
+
+                    pHLevelChart.data.datasets[0].data.push(value.pHLevel);
+                    pHLevelChart.data.sum = parseInt(pHLevelChart.data.sum) + parseInt(value.pHLevel);
+                    pHLevelChart.data.labels.push(getTimeofData(value.date));
+
+                    pHLevelChart.data.datasets[1].data.push(parseInt(pHLevelChart.data.sum)/pHLevelChart.data.datasets[0].data.length);
+
+                    DOLevelChart.data.datasets[0].data.push(value.DOLevel);
+                    DOLevelChart.data.sum = parseInt(DOLevelChart.data.sum) + parseInt(value.DOLevel);
+                    DOLevelChart.data.labels.push(getTimeofData(value.date));
+
+                    DOLevelChart.data.datasets[1].data.push(parseInt(pHLevelChart.data.sum)/pHLevelChart.data.datasets[0].data.length);
+                });
+
+            tempChart.update();
+            pHLevelChart.update()
+            DOLevelChart.update();
+
+            // JQUERY FOR UPDATING THE LATEST VALUES AND AVG VALUES
+            // THIS WILL GET THE LAST VALUE OF THE VALUE ARRAY WHICH IS THE LATEST SENSOR VALUE
+            $('#latest-temp').html('<h4 align="center">' + values[values.length-1].temperature + ' °C</h4>');
+            $('#latest-pHLevel').html('<h4 align="center">' + values[values.length-1].pHLevel + '</h4>');
+            $('#latest-DOLevel').html('<h4 align="center">' + values[values.length-1].DOLevel + ' ppm</h4>');
+            $('#avg-temp').html('<h4 align="center">' + (parseInt(tempChart.data.sum)/tempChart.data.datasets[0].data.length).toFixed(2) + ' °C</h4>');
+            $('#avg-pHLevel').html('<h4 align="center">' + (parseInt(pHLevelChart.data.sum)/pHLevelChart.data.datasets[0].data.length).toFixed(2) + '</h4>');
+            $('#avg-DOLevel').html('<h4 align="center">' + (parseInt(DOLevelChart.data.sum)/DOLevelChart.data.datasets[0].data.length).toFixed(2) + ' ppm</h4>');
+            }
+        });
+
+        //INITIAL SENSOR PREDICTIONS
+        socket.on('lastpredictions', (predictions)=>{
+
+            // EMPTY THE CHART FIRST
+            tempChartPredict.data.datasets[0].data = [];
+            tempChartPredict.data.labels = [];
+            pHLevelChartPredict.data.datasets[0].data = [];
+            pHLevelChartPredict.data.labels = [];
+            DOLevelChartPredict.data.datasets[0].data = [];
+            DOLevelChartPredict.data.labels = [];
+
+            //THEN PLOT THE NEW INCOMING VALUES
+            timeToPush = predictions[0].date;
+            for(var i=0; i< predictions[0].temperature.length; i++){
+                tempChartPredict.data.datasets[0].data.push(predictions[0].temperature[i]);
+                tempChartPredict.data.labels.push(getTimeofData(timeToPush, false));
+
+                pHLevelChartPredict.data.datasets[0].data.push(predictions[0].pHLevel[i]);
+                pHLevelChartPredict.data.labels.push(getTimeofData(timeToPush, false));
+
+                DOLevelChartPredict.data.datasets[0].data.push(predictions[0].DOLevel[i]);
+                DOLevelChartPredict.data.labels.push(getTimeofData(timeToPush, false));
+
+                timeToPush = timeToPush + 60
+            }
+            tempChartPredict.update();
+            pHLevelChartPredict.update();
+            DOLevelChartPredict.update();
+        });
+
+        //UPDATE PREDICTION EVERY NEW INCOMING DATA
+        socket.on('latestpredictions', (predictions)=>{
+
+            // EMPTY THE CHART FIRST
+            tempChartPredict.data.datasets[0].data = [];
+            tempChartPredict.data.labels = [];
+            pHLevelChartPredict.data.datasets[0].data = [];
+            pHLevelChartPredict.data.labels = [];
+            DOLevelChartPredict.data.datasets[0].data = [];
+            DOLevelChartPredict.data.labels = [];
+
+            //THEN PLOT THE NEW INCOMING VALUES
+            timeToPush = predictions.date;
+            for(var i=0; i< predictions.temperature.length; i++){
+
+                tempChartPredict.data.datasets[0].data.push(predictions.temperature[i]);
+                tempChartPredict.data.labels.push(getTimeofData(timeToPush, false));
+
+                pHLevelChartPredict.data.datasets[0].data.push(predictions.pHLevel[i]);
+                pHLevelChartPredict.data.labels.push(getTimeofData(timeToPush, false));
+
+                DOLevelChartPredict.data.datasets[0].data.push(predictions.DOLevel[i]);
+                DOLevelChartPredict.data.labels.push(getTimeofData(timeToPush, false));
+
+                timeToPush = timeToPush + 60 //ADD 1 MINUTE TO THE TIME
+            }
+            tempChartPredict.update();
+            pHLevelChartPredict.update();
+            DOLevelChartPredict.update();
+        });
+        
+
+        //******** UPDATE EVERY LATEST VALUES ***********//
+        // TEMPERATURE
+        socket.on('temperature', (data)=>{
+            //THIS WILL SHIFT THE LAST VALUE OF THE ARRAY SO THAT ONLY 1 HOUR IS SHOWN
+            dataLength = DOLevelChart.data.labels.length;
+            dataMax = 30;
+            if (dataLength > dataMax){
+                //REMOVE THE FIRST VALUE FROM THE SUM TO GET THE RIGHT AVERAGE
+                removedValue = tempChart.data.datasets[0].data.shift();
+                tempChart.data.sum = tempChart.data.sum - removedValue;
+                tempChart.data.datasets[1].data.shift();
+                tempChart.data.labels.shift();
+            }
+
+            var payload = data.split(";");
+
+            $('#latest-temp').html('<h4 align="center">' + payload[1] + ' °C</h4>');
+            $('#lasthour-temp').prepend('<c><font size="2">' + "<" + payload[1] + " °C> " + '</font></c>');
+
+            tempChart.data.datasets[0].data.push(payload[1]);
+            tempChart.data.labels.push(getTimeofData(payload[2]));
+
+            tempChart.data.sum = parseInt(tempChart.data.sum) + parseInt(payload[1]);
+            var avg = (parseInt(tempChart.data.sum)/tempChart.data.datasets[0].data.length).toFixed(2);
+            tempChart.data.datasets[1].data.push(avg);
+
+            $('#avg-temp').html('<h4 align="center">' + avg + ' °C</h4>');
+
+            tempChart.update();
+        });
+
+        //PH LEVEL
+        socket.on('pHLevel', (data)=>{
+            //THIS WILL SHIFT THE LAST VALUE OF THE ARRAY SO THAT ONLY 1 HOUR IS SHOWN
+            dataLength = DOLevelChart.data.labels.length;
+            dataMax = 30;
+            if (dataLength > dataMax){
+                //REMOVE THE FIRST VALUE FROM THE SUM TO GET THE RIGHT AVERAGE
+                removedValue = pHLevelChart.data.datasets[0].data.shift();
+                pHLevelChart.data.sum = pHLevelChart.data.sum - removedValue;
+                pHLevelChart.data.datasets[1].data.shift();
+                pHLevelChart.data.labels.shift();
+            }
+
+            var payload = data.split(";");
+
+            $('#latest-pHLevel').html('<h4 align="center">' + payload[1] + '</h4>');
+            $('#lasthour-pHLevel').prepend('<c><font size="2">' + "<" + payload[1] + "> " + '</font></c>');
+
+            pHLevelChart.data.datasets[0].data.push(payload[1]);
+            pHLevelChart.data.labels.push(getTimeofData(payload[2]));
+
+            pHLevelChart.data.sum = parseInt(pHLevelChart.data.sum) + parseInt(payload[1]);
+            var avg = (parseInt(pHLevelChart.data.sum)/pHLevelChart.data.datasets[0].data.length).toFixed(2);
+            pHLevelChart.data.datasets[1].data.push(avg);
+
+            $('#avg-pHLevel').html('<h4 align="center">' + avg + '</h4>');
+
+            pHLevelChart.update();
+        });
+
+        //DO LEVEL
+        socket.on('DOLevel', (data)=>{
+            //THIS WILL SHIFT THE LAST VALUE OF THE ARRAY SO THAT ONLY 1 HOUR IS SHOWN
+            dataLength = DOLevelChart.data.labels.length;
+            dataMax = 30;
+            if (dataLength > dataMax){
+                //REMOVE THE FIRST VALUE FROM THE SUM TO GET THE RIGHT AVERAGE
+                removedValue = DOLevelChart.data.datasets[0].data.shift();
+                DOLevelChart.data.sum = DOLevelChart.data.sum - removedValue;
+                DOLevelChart.data.datasets[1].data.shift();
+                DOLevelChart.data.labels.shift();
+
+                $("#td_id").attr('class', 'newClass');
+                $( "lasthour-DOLevel-" + 60 - dataLength ).remove();
+            }
+
+            var payload = data.split(";");
+
+            $('#latest-DOLevel').html('<h4 align="center">' + payload[1] + ' ppm</h4>');
+            $('#lasthour-DOLevel').prepend('<c><font size="2">' + "<" + payload[1] + " ppm>" + '</font></c>');
+
+            DOLevelChart.data.datasets[0].data.push(payload[1]);
+            DOLevelChart.data.labels.push(getTimeofData(payload[2]));
+
+            DOLevelChart.data.sum = parseInt(DOLevelChart.data.sum) + parseInt(payload[1]);
+            var avg = (parseInt(DOLevelChart.data.sum)/DOLevelChart.data.datasets[0].data.length).toFixed(2);
+            DOLevelChart.data.datasets[1].data.push(avg);
+
+            $('#avg-DOLevel').html('<h4 align="center">' + avg + ' ppm</h4>');
+
+            DOLevelChart.update();
+        });
+
+    });
+
+</script>
