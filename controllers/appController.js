@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const fs = require('fs');
 
 const User = require("../models/Users");
 
@@ -16,7 +17,76 @@ exports.monitoring_get = (req, res) => {
 
 exports.controls_get = (req, res) => {
   isUserLoggedIn = req.session.isAuth;
-  res.render('controls', { logged_in: isUserLoggedIn });
+
+  fs.readFile('./config/controls.json', (err, data) =>{
+    if (err) throw err;
+    let controlConfig = JSON.parse(data);
+
+    res.render('controls',{ logged_in: isUserLoggedIn, 
+      TempLow: controlConfig.TempLow,
+      TempHigh: controlConfig.TempHigh,
+      PhLow: controlConfig.PhLow,
+      PhHigh: controlConfig.PhHigh,
+      DOLow: controlConfig.DOLow,
+      DOHigh: controlConfig.DOHigh,
+      FishFreq: controlConfig.FishFreq});
+  });
+}
+
+exports.controls_post = (req, res) => {
+  isUserLoggedIn = req.session.isAuth;
+  const { TempLow, TempHigh, 
+          DOLow, DOHigh, 
+          PhLow, PhHigh,
+          FishFreq } = req.body;
+  
+  // Sanitize the input of the user
+  if ( ( (TempLow < TempHigh) && (DOLow < DOHigh) && (PhLow < PhHigh) ) &&
+      ( (TempLow > 17) && (TempHigh < 30) ) && ( (DOLow > 0) && (DOHigh < 40) ) &&
+      ( (PhLow > 4) && (PhHigh < 10) ) && ( (FishFreq > 0) && (FishFreq < 10) ))
+      {
+        const configuration = {
+          TempLow: TempLow,
+          TempHigh: TempHigh,
+          PhLow: PhLow,
+          PhHigh: PhHigh,
+          DOLow: DOLow,
+          DOHigh: DOHigh,
+          FishFreq: FishFreq
+        }
+        
+        // Save the configuration to a file
+        const data = JSON.stringify(configuration, null, 2);
+        fs.writeFile("./config/controls.json", data, err=>{
+          if (err) throw err;
+          res.render('controls', { 
+            logged_in: isUserLoggedIn,
+            TempLow: TempLow,
+            TempHigh: TempHigh,
+            PhLow: PhLow,
+            PhHigh: PhHigh,
+            DOLow: DOLow,
+            DOHigh: DOHigh,
+            FishFreq: FishFreq });
+        });
+      }
+    
+    // Return the previous configuration if sanitization failed
+    else {
+    fs.readFile('./config/controls.json', (err, data) =>{
+      if (err) throw err;
+      let controlConfig = JSON.parse(data);
+  
+      res.render('controls',{ logged_in: isUserLoggedIn, 
+        TempLow: controlConfig.TempLow,
+        TempHigh: controlConfig.TempHigh,
+        PhLow: controlConfig.PhLow,
+        PhHigh: controlConfig.PhHigh,
+        DOLow: controlConfig.DOLow,
+        DOHigh: controlConfig.DOHigh,
+        FishFreq: controlConfig.FishFreq});
+    });
+  }
 }
 
 exports.login_get = (req, res) => {

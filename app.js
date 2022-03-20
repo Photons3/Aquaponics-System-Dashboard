@@ -1,6 +1,5 @@
-const express = require('express');
+const express = require('express');                   //express middleware
 const path = require('path');                         //path navigation
-const { PubSub } = require('@google-cloud/pubsub');   //google cloud pub/sub
 const { engine } = require('express-handlebars');     //view engine
 
 const appController = require("./controllers/appController"); //import routes
@@ -70,6 +69,10 @@ app.get("/", isAuth, appController.dashboard_get);
 app.get("/monitoring", isAuth, appController.monitoring_get);
 app.get("/controls", isAuth, appController.controls_get);
 
+// Controls Post
+app.post("/controls", appController.controls_post)
+
+// User Loguout Request
 app.post("/logout", appController.logout_post);
 
 //Starting Server

@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('express');                 //Express web framework
 const path = require('path');                       //path navigation
 const bodyParser = require('body-parser');          //to access at req.value
 const methodOverride = require('method-override');  //needs for edit and delete
