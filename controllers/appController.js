@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const fs = require('fs');
 
 const User = require("../models/Users");
+const mqttConfiguration = require("../app_modules/mqtt-configuration")
 
 let isUserLoggedIn = false; 
 
@@ -55,6 +56,9 @@ exports.controls_post = (req, res) => {
           FishFreq: FishFreq
         }
         
+        const message = JSON.stringify(configuration).replace(/[{}]/g, "");
+        //mqttConfiguration.SendConfiguration(message);
+
         // Save the configuration to a file
         const data = JSON.stringify(configuration, null, 2);
         fs.writeFile("./config/controls.json", data, err=>{
