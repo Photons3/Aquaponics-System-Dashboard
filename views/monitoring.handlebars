@@ -290,7 +290,7 @@
                     DOLevelChart.data.sum = parseInt(DOLevelChart.data.sum) + parseInt(value.DOLevel);
                     DOLevelChart.data.labels.push(getTimeofData(value.date));
 
-                    DOLevelChart.data.datasets[1].data.push(parseInt(pHLevelChart.data.sum)/pHLevelChart.data.datasets[0].data.length);
+                    DOLevelChart.data.datasets[1].data.push(parseInt(DOLevelChart.data.sum)/DOLevelChart.data.datasets[0].data.length);
                 });
 
             tempChart.update();

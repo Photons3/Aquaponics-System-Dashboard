@@ -1,5 +1,6 @@
-const { PubSub } = require('@google-cloud/pubsub');   //google cloud pub/sub
 const mongoose = require('mongoose');
+const mqtt = require('mqtt');
+const hiveclient = require("./hivemqtt.js");
 
 //Include the Mongoose Models
 const SensorValues = require('../models/Sensor_Values');
@@ -32,95 +33,109 @@ module.exports = {
             });
         });
 
-        const pubSubClient = new PubSub();
-        const subscriptionName = 'projects/awesome-sylph-271611/subscriptions/my-subscription1';
-
         function listenForMessages(){
-            // References to existing subscription
-            const subscription = pubSubClient.subscription(subscriptionName);
-
             //Create a message event handler
-            const messageHandler = message => {
-                // Message handler for temperature, humidity and DO
-                if (message == null || message.length === 0) return;
-                console.log(`Received Sensor Values : ${message.data}`);
-        
-                const newSensorValuesToStore = new SensorValues({
-                deviceId: message.data.deviceId,
-                temperature: message.data.temperature,
-                pHLevel: message.data.pHLevel,
-                DOLevel: message.data.DOLevel,
-                date: message.data.date
-                });
-        
-                //ADD THE NEW VALUES TO THE DB
-                newSensorValuesToStore.save()
-                .then(result => {console.log(`Values Stored: ${result}`)});
-        
-                //SENSOR VALUES
-                //TEMPERATURE
-                io.emit('temperature', (message.data.deviceId + ";" + message.data.temperature + ";" + message.data.date).toString());
-                //PH LEVEL
-                io.emit('pHLevel', (message.data.deviceId + ";" + message.data.pHLevel + ";" + message.data.date).toString());
-                //DO LEVEL
-                io.emit('DOLevel', (message.data.deviceId + ";" + message.data.DOLevel + ";" + message.data.date).toString());
+            const messageHandler = (topic, messageReceived) => {
+
+                if (messageReceived == null || messageReceived.length === 0) return;
+                console.log(`Received Sensor Values : ${messageReceived}`);
+
+                if (topic == "/aquaponics/lspu/sensors")
+                {
+                    const dateReceived = Date.now()/1000;
+                    const message = JSON.parse(messageReceived);
+                    // Message handler for temperature, PH and DO
+                    const newSensorValuesToStore = new SensorValues({
+                    deviceId: 'ESP32',
+                    date: dateReceived,                
+                    temperature: message.TEMP,
+                    pHLevel: message.PH,
+                    DOLevel: message.DO,
+                    WaterHeight: message.WH,
+                    });
+            
+                    //ADD THE NEW VALUES TO THE DB
+                    newSensorValuesToStore.save()
+                    .then(result => {console.log(`Values Stored: ${result}`)});
+            
+                    //SENSOR VALUES
+                    //TEMPERATURE
+                    io.emit('temperature', ('ESP32' + ";" + message.TEMP + ";" + dateReceived).toString());
+                    //PH LEVEL
+                    io.emit('pHLevel', ('ESP32' + ";" + message.PH + ";" + dateReceived).toString());
+                    //DO LEVEL
+                    io.emit('DOLevel', ('ESP32' + ";" + message.DO + ";" + dateReceived).toString());
+                }
+
+                if (topic == "/aquaponics/lspu/predictions")
+                {
+                    const message = JSON.parse(messageReceived);
+                    // Message handler Prediction values
+                    const newPredictionValuestoStore = new PredictionValues({
+                        deviceId: 'ESP32',
+                        date: Date.now(),
+                        temperature:[
+                            message.temperature[0],
+                            message.temperature[1],
+                            message.temperature[2],
+                            message.temperature[3],
+                            message.temperature[4],
+                            message.temperature[5],
+                            message.temperature[6],
+                            message.temperature[7],
+                            message.temperature[8],
+                            message.temperature[9]
+                            ],
+                        pHLevel: [
+                            message.pHLevel[0],
+                            message.pHLevel[1],
+                            message.pHLevel[2],
+                            message.pHLevel[3],
+                            message.pHLevel[4],
+                            message.pHLevel[5],
+                            message.pHLevel[6],
+                            message.pHLevel[7],
+                            message.pHLevel[8],
+                            message.pHLevel[9]
+                        ],
+                        DOLevel: [
+                            message.DOLevel[0],
+                            message.DOLevel[1],
+                            message.DOLevel[2],
+                            message.DOLevel[3],
+                            message.DOLevel[4],
+                            message.DOLevel[5],
+                            message.DOLevel[6],
+                            message.DOLevel[7],
+                            message.DOLevel[8],
+                            message.DOLevel[9]
+                        ]
+                        });
                 
-                // Message handler Prediction values
-
-                const newPredictionValuestoStore = new PredictionValues({
-                deviceId: message.deviceId,
-                date: message.date,
-                temperature:[
-                    message.temperature[0],
-                    message.temperature[1],
-                    message.temperature[2],
-                    message.temperature[3],
-                    message.temperature[4],
-                    message.temperature[5],
-                    message.temperature[6],
-                    message.temperature[7],
-                    message.temperature[8],
-                    message.temperature[9]
-                    ],
-                pHLevel: [
-                    message.pHLevel[0],
-                    message.pHLevel[1],
-                    message.pHLevel[2],
-                    message.pHLevel[3],
-                    message.pHLevel[4],
-                    message.pHLevel[5],
-                    message.pHLevel[6],
-                    message.pHLevel[7],
-                    message.pHLevel[8],
-                    message.pHLevel[9]
-                ],
-                DOLevel: [
-                    message.DOLevel[0],
-                    message.DOLevel[1],
-                    message.DOLevel[2],
-                    message.DOLevel[3],
-                    message.DOLevel[4],
-                    message.DOLevel[5],
-                    message.DOLevel[6],
-                    message.DOLevel[7],
-                    message.DOLevel[8],
-                    message.DOLevel[9]
-                ]
-                });
-        
-                //ADD THE NEW VALUES TO THE DB
-                newPredictionValuestoStore.save()
-                .then(result => {console.log(`Prediction Stored: ${result}`)});
-        
-                //SEND THE PREDICTIONS TO CLIENT
-                io.emit('latestpredictions', prediction);
-
-                //"Ack" (acknowledge receipt of) the message
-                message.ack();
+                    //ADD THE NEW VALUES TO THE DB
+                    newPredictionValuestoStore.save()
+                    .then(result => {console.log(`Prediction Stored: ${result}`)});
+            
+                    //SEND THE PREDICTIONS TO CLIENT
+                    io.emit('latestpredictions', message);
+                } 
             };
 
+            //setup the callbacks
+            hiveclient.on('connect', () => {
+                console.log('Connected to HIVEMQ');
+            });
+
+            hiveclient.on('error', (error) => {
+                console.log(error);
+            });
+
+            hiveclient.on('message', messageHandler);
+
             // Listen for new messages until timeout is hit
-            subscription.on('message', messageHandler);
+            // subscribe to topics
+            hiveclient.subscribe('/aquaponics/lspu/sensors');
+            hiveclient.subscribe('/aquaponics/lspu/predictions');
         }
 
         listenForMessages();

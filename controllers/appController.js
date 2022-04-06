@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const fs = require('fs');
 
 const User = require("../models/Users");
-const mqttConfiguration = require("../app_modules/mqtt-configuration")
+const hivemqClient = require("../app_modules/hivemqtt.js");
 
 let isUserLoggedIn = false; 
 
@@ -43,8 +43,8 @@ exports.controls_post = (req, res) => {
   
   // Sanitize the input of the user
   if ( ( (TempLow < TempHigh) && (DOLow < DOHigh) && (PhLow < PhHigh) ) &&
-      ( (TempLow > 17) && (TempHigh < 30) ) && ( (DOLow > 0) && (DOHigh < 40) ) &&
-      ( (PhLow > 4) && (PhHigh < 10) ) && ( (FishFreq > 0) && (FishFreq < 10) ))
+      ( (TempLow > 10) && (TempHigh < 40) ) && ( (DOLow > 0) && (DOHigh < 50) ) &&
+      ( (PhLow > 2) && (PhHigh < 15) ) && ( (FishFreq > 0) && (FishFreq < 10) ))
       {
         const configuration = {
           TempLow: TempLow,
@@ -55,9 +55,12 @@ exports.controls_post = (req, res) => {
           DOHigh: DOHigh,
           FishFreq: FishFreq
         }
-        
+
+        //const message = TempLow.toString() + ' ' + TempHigh.toString();
         const message = JSON.stringify(configuration).replace(/[{}]/g, "");
-        //mqttConfiguration.SendConfiguration(message);
+        hivemqClient.publish('/aquaponics/lspu/configuration', message, {qos: 2}, ()=>{
+          console.log(message);
+        })
 
         // Save the configuration to a file
         const data = JSON.stringify(configuration, null, 2);

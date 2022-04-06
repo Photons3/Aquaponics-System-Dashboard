@@ -7,7 +7,8 @@ const ValuesSchema = new Schema({
     date:{type: Number, required: true},
     temperature: {type: Number, required: true},
     pHLevel: {type: Number, required: true},
-    DOLevel: {type: Number, required: true}
+    DOLevel: {type: Number, required: true},
+    WaterHeight: {type: Number, required: true}
 });
 
 module.exports = mongoose.model('values', ValuesSchema);
