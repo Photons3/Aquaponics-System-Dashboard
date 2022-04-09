@@ -69,8 +69,9 @@ module.exports = {
 
                 if (topic == "/aquaponics/lspu/predictions")
                 {
-                    const message = JSON.parse(messageReceived);
+                    let message = JSON.parse(messageReceived);
                     // Message handler Prediction values
+                    message.date = Date.now();
                     const newPredictionValuestoStore = new PredictionValues({
                         deviceId: 'ESP32',
                         date: Date.now(),
