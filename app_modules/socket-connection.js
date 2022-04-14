@@ -24,7 +24,7 @@ module.exports = {
             //LAST PREDICTIONS TO WEBPAGE
             //THIS WILL QUERY THE LAST 10 MIN OF PREDICTION VALUE
             var predictionValues = PredictionValues.find({
-                date: {$gte: parseInt(Date.now()/1000) - 900}})
+                date: {$gte: parseInt(Date.now()) - 900*1000}})
             .sort({$natural: - 1}).limit(1)
             .then(values => {
                 if (values == null || values.length === 0) return;
