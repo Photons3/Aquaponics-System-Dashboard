@@ -1,106 +1,123 @@
 <link href="/stylesheet/controls.css" rel="stylesheet">
-
 <form action="/controls" method="POST" class="form-group" style="font-family: 'Nanum Gothic', sans-serif;">
-<div class="container">
-  <div class="row">
-    <div class="col-sm-2"></div>
-    <div class="col-sm-4">
-      <h1 style="font-weight: bolder; margin-top: 25px;">Control System</h1>
-    </div>
-    <div class="col-sm-4">
-      <button type="submit" class="btn btn-success " style="float:right; margin-inline-end: 40px; margin-top: 10px;">Save</button>
-      <br>
-      <br>
-      <hr style="height:2px;border-width:0;color:green;background-color:green">   
-    </div>
-    <div class="col-sm-2"></div>
-  </div>
-
-  <div class="row">
-    <div class="col-sm-2">    
-    </div>
-    <div class="col-sm-4 text-center" style="margin-right: 20px;">
-        
-        <div class="row">
-                    <div class="card " style="width:100rem; padding: 40px; box-shadow: 10px 10px rgb(0, 0, 0); border-color:rgb(255, 153, 0); border-width: 5px; border-radius: 40px; margin-top: 10px;">               
-                    <h3 style="font-weight: bolder;"><img src="/img/temp.png" alt="logo" style="width: 20px; length: 20px;">         Temperature</h3>
-                    <h5> Keep Value at:</h5>
-                    <div id="input">
-                    <div class="row vertical-center">  
-                    <div class="col-5">
-                        <input type="number" name="TempLow" value="{{TempLow}}" class="form-control" placeholder="C&#176;"> 
-                      </div> 
-                    <div class="col-2">
-                        <h4 align="text-center">-</h4>
-                    </div>
-                    <div class="col-5">
-                        <input type="number" name="TempHigh" value="{{TempHigh}}" class="form-control" placeholder="C&#176;">
-                    </div>
-                </div>
-                </div>
-                </div>
-                </div>
-                  
-                   <div class="row">
-                    <div class="card" style="width:100rem; padding: 40px; box-shadow: 10px 10px rgb(0, 0, 0); border-color:rgb(56, 161, 161); border-width: 5px; border-radius: 40px; margin-top: 20px;">                 
-                                <h3 style="font-weight: bolder;"><img src="/img/DO.png" alt="logo" style="width: 40px; length: 40px;">  Dissolved Oxygen</h3>
-                                <h5> Keep Value at:</h5>
-                                <div id="input">
-                                <div class="row vertical-center">  
-                                <div class="col-5">
-                                    <input type="number" name="DOLow" value="{{DOLow}}" class="form-control" placeholder="ppm"> 
-                                  </div> 
-                                <div class="col-2">
-                                    <h4 align="text-center">-</h4>
-                                </div>
-                                <div class="col-5">
-                                    <input type="number" name="DOHigh" value="{{DOHigh}}" class="form-control" placeholder="ppm">
-                                </div>
-                            </div>
-                            </div>
-                            </div>
-                            </div>
-                        </div>
-    
-      <div class="col-sm-4 text-center">  
-             
+    <div class="container">
+      <div class="row">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-4">
+            <h1 style="font-weight: bolder; margin-top: 25px;">Control System</h1>
+          </div>
+          <div class="col-sm-4">
+            <button type="submit" class="btn btn-success " style="float:right; margin-inline-end: 40px; margin-top: 10px;">Save</button>
+            <br>
+            <br>
+            <hr style="height:2px;border-width:0;color:green;background-color:green">
+          </div>
+          <div class="col-sm-2"></div>
+      </div>
+      <div class="row">
+          <div class="col-sm-2">    
+          </div>
+          <div class="col-sm-4 text-center" style="margin-right: 20px;">
             <div class="row">
-                        <div class="card" style="width:100rem; padding: 43px;  box-shadow: 10px 10px rgb(0, 0, 0); border-color:rgb(38, 0, 255); border-width: 5px; border-radius: 40px; margin-top: 10px;">                
-                        <h3 style="font-weight: bolder;"><img src="/img/ph.png" alt="logo" style="width: 30px; length: 30px; margin-right: 10px;">pH Level</h3>
-                        <h5> Keep Value at:</h5>
-                        <div id="input">
-                        <div class="row vertical-center">  
+                <div class="card " style="width:100rem; padding: 40px; box-shadow: 10px 10px rgb(0, 0, 0); border-color:rgb(255, 153, 0); border-width: 5px; border-radius: 40px; margin-top: 10px;">
+                  <h3 style="font-weight: bolder;"><img src="/img/temp.png" alt="logo" style="width: 20px; length: 20px;">         Temperature</h3>
+                  <h5> Keep Value at:</h5>
+                  <div id="input">
+                      <div class="row vertical-center">
+                        <div class="col-5">
+                            <input type="number" name="TempLow" value="{{TempLow}}" class="form-control" placeholder="C&#176;"> 
+                        </div>
+                        <div class="col-2">
+                            <h4 align="text-center">-</h4>
+                        </div>
+                        <div class="col-5">
+                            <input type="number" name="TempHigh" value="{{TempHigh}}" class="form-control" placeholder="C&#176;">
+                        </div>
+                      </div>
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="card" style="width:100rem; padding: 40px; box-shadow: 10px 10px rgb(0, 0, 0); border-color:rgb(56, 161, 161); border-width: 5px; border-radius: 40px; margin-top: 20px;">
+                  <h3 style="font-weight: bolder;"><img src="/img/DO.png" alt="logo" style="width: 40px; length: 40px;">  Dissolved Oxygen</h3>
+                  <h5> Keep Value at:</h5>
+                  <div id="input">
+                      <div class="row vertical-center">
+                        <div class="col-5">
+                            <input type="number" name="DOLow" value="{{DOLow}}" class="form-control" placeholder="ppm"> 
+                        </div>
+                        <div class="col-2">
+                            <h4 align="text-center">-</h4>
+                        </div>
+                        <div class="col-5">
+                            <input type="number" name="DOHigh" value="{{DOHigh}}" class="form-control" placeholder="ppm">
+                        </div>
+                      </div>
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+              <div class="card" style="width:100rem; padding: 30px;  box-shadow: 10px 10px rgb(0, 0, 0); border-color:rgb(197, 146, 52); border-width: 5px; border-radius: 40px; margin-top: 20px;">
+                  <h3 style="font-weight: bolder;"><img src="/img/fish.png" alt="logo" style="width: 70px; length: 70px;">Submersible Pump Duration</h3>
+                  <div class="row vertical-center">
+                    <div class="col-sm-6">
+                        <h5> Duration </h5>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="number" name="SubmersiblePumpDuration" value="{{SubmersiblePumpDuration}}" class="form-control" placeholder="seconds">
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4 text-center">
+            <div class="row">
+                <div class="card" style="width:100rem; padding: 43px;  box-shadow: 10px 10px rgb(0, 0, 0); border-color:rgb(38, 0, 255); border-width: 5px; border-radius: 40px; margin-top: 10px;">
+                  <h3 style="font-weight: bolder;"><img src="/img/ph.png" alt="logo" style="width: 30px; length: 30px; margin-right: 10px;">pH Level</h3>
+                  <h5> Keep Value at:</h5>
+                  <div id="input">
+                      <div class="row vertical-center">
                         <div class="col-5">
                             <input type="number" name="PhLow" value="{{PhLow}}" class="form-control"> 
-                          </div> 
+                        </div>
                         <div class="col-2">
                             <h4 align="text-center">-</h4>
                         </div>
                         <div class="col-5">
                             <input type="number" name="PhHigh" value="{{PhHigh}}" class="form-control">
                         </div>
+                      </div>
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="card" style="width:100rem; padding: 40px;  box-shadow: 10px 10px rgb(0, 0, 0); border-color:rgb(197, 146, 52); border-width: 5px; border-radius: 40px; margin-top: 20px;">
+                  <h3 style="font-weight: bolder;"><img src="/img/fish.png" alt="logo" style="width: 70px; length: 70px;">Fish Feed</h3>
+                  <div class="row vertical-center">
+                      <div class="col-sm-6">
+                        <h5> Frequency </h5>
+                      </div>
+                      <div class="col-sm-6">
+                        <input type="number" name="FishFreq" value="{{FishFreq}}" class="form-control" placeholder="per day">
+                      </div>
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+              <div class="card" style="width:100rem; padding: 35px;  box-shadow: 10px 10px rgb(0, 0, 0); border-color:rgb(197, 146, 52); border-width: 5px; border-radius: 40px; margin-top: 20px;">
+                  <h3 style="font-weight: bolder;"><img src="/img/fish.png" alt="logo" style="width: 70px; length: 70px;">Fishfeed Duration</h3>
+                  <div class="row vertical-center">
+                    <div class="col-sm-6">
+                        <h5> Duration </h5>
                     </div>
+                    <div class="col-sm-6">
+                        <input type="number" name="FishFeedDuration" value="{{FishFeedDuration}}" class="form-control" placeholder="seconds">
                     </div>
-                    </div>
-                    </div>
-          
-                    <div class="row">
-                       <div class="card" style="width:100rem; padding: 50px;  box-shadow: 10px 10px rgb(0, 0, 0); border-color:rgb(197, 146, 52); border-width: 5px; border-radius: 40px; margin-top: 20px;">                
-                           <h3 style="font-weight: bolder;"><img src="/img/fish.png" alt="logo" style="width: 70px; length: 70px;">Fish Feed</h3>
-                                     
-                            <div class="row vertical-center"> 
-                            <div class="col-sm-6">
-                            <h5> Frequency </h5> 
-                            </div> 
-                            <div class="col-sm-6">
-                            <input type="number" name="FishFreq" value="{{FishFreq}}" class="form-control" placeholder="per day">
-                            </div>
-                          </div>
-                       </div>
-                     </div>
-                  </div>  
+                  </div>
+              </div>
+            </div>
+          </div>
       </div>
-    <div class="col-sm-2"> </div>
+      <div class="col-sm-2"> </div>
     </div>
-</div>
 </form>

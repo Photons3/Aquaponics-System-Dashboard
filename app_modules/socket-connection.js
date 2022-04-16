@@ -6,6 +6,38 @@ const hiveclient = require("./hivemqtt.js");
 const SensorValues = require('../models/Sensor_Values');
 const PredictionValues = require('../models/Predictions_Values');
 
+function getMonthString(month)
+{
+    switch(month) {
+        case 1:
+            return "Jan";
+        case 2:
+            return "Feb";
+        case 3:
+            return "Mar";
+        case 4:
+            return "Apr";
+        case 5:
+            return "May";
+        case 6:
+            return "Jun";
+        case 7:
+            return "Jul";
+        case 8:
+            return "Aug";
+        case 9:
+            return "Sep";
+        case 10:
+            return "Oct";
+        case 11:
+            return "Nov";
+        case 12:
+            return "Dec";
+        default:
+            return "Jan";
+    }
+};
+
 module.exports = {
     start: function(io){
         //NEW SOCKET CONNECTION
@@ -24,7 +56,7 @@ module.exports = {
             //LAST PREDICTIONS TO WEBPAGE
             //THIS WILL QUERY THE LAST 10 MIN OF PREDICTION VALUE
             var predictionValues = PredictionValues.find({
-                date: {$gte: parseInt(Date.now()) - 900*1000}})
+                date: {$gte: parseInt(Date.now()/1000) - 900}})
             .sort({$natural: - 1}).limit(1)
             .then(values => {
                 if (values == null || values.length === 0) return;
@@ -42,8 +74,19 @@ module.exports = {
 
                 if (topic == "/aquaponics/lspu/sensors")
                 {
-                    const dateReceived = Date.now()/1000;
+
                     const message = JSON.parse(messageReceived);
+                    
+                    // const dateReceivedStr = message.DATE[3].toString() 
+                    //                     + "-" + getMonthString(message.DATE[4]) + "-" 
+                    //                     + message.DATE[5].toString() 
+                    //                     + " "  + message.DATE[1].toString()
+                    //                     + ":"  + message.DATE[2].toString()
+                    //                     + ":" + message.DATE[0].toString()
+                    //                     + " GMT+08";
+
+                    // const dateReceived = Date.parse(dateReceivedStr)/1000;
+                    const dateReceived = Date.now()/1000;
                     // Message handler for temperature, PH and DO
                     const newSensorValuesToStore = new SensorValues({
                     deviceId: 'ESP32',
@@ -69,12 +112,23 @@ module.exports = {
 
                 if (topic == "/aquaponics/lspu/predictions")
                 {
-                    let message = JSON.parse(messageReceived);
+                    const message = JSON.parse(messageReceived);
                     // Message handler Prediction values
+                    // const dateReceivedStr = message.DATE[3].toString() 
+                    // + "-" + getMonthString(message.DATE[4]) + "-" 
+                    // + message.DATE[5].toString() 
+                    // + " "  + message.DATE[1].toString()
+                    // + ":"  + message.DATE[2].toString()
+                    // + ":" + message.DATE[0].toString()
+                    // + " GMT+08";
+
+                    // const dateReceived = Date.parse(dateReceivedStr)/1000;
+                    const dateReceived = Date.now()/1000;
+
                     message.date = Date.now();
                     const newPredictionValuestoStore = new PredictionValues({
                         deviceId: 'ESP32',
-                        date: Date.now(),
+                        date: dateReceived,
                         temperature:[
                             message.temperature[0],
                             message.temperature[1],

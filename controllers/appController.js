@@ -30,7 +30,10 @@ exports.controls_get = (req, res) => {
       PhHigh: controlConfig.PhHigh,
       DOLow: controlConfig.DOLow,
       DOHigh: controlConfig.DOHigh,
-      FishFreq: controlConfig.FishFreq});
+      FishFreq: controlConfig.FishFreq,
+      SubmersiblePumpDuration: controlConfig.PumpD / 1000,
+      FishFeedDuration: controlConfig.FishD / 1000
+    });
   });
 }
 
@@ -39,13 +42,20 @@ exports.controls_post = (req, res) => {
   const { TempLow, TempHigh, 
           DOLow, DOHigh, 
           PhLow, PhHigh,
-          FishFreq } = req.body;
+          FishFreq,
+          SubmersiblePumpDuration,
+          FishFeedDuration } = req.body;
   
   // Sanitize the input of the user
   if ( ( (TempLow < TempHigh) && (DOLow < DOHigh) && (PhLow < PhHigh) ) &&
       ( (TempLow > 10) && (TempHigh < 40) ) && ( (DOLow > 0) && (DOHigh < 50) ) &&
-      ( (PhLow > 2) && (PhHigh < 15) ) && ( (FishFreq > 0) && (FishFreq < 10) ))
+      ( (PhLow > 2) && (PhHigh < 15) ) && ( (FishFreq > 0) && (FishFreq < 10) ) &&
+      ( (SubmersiblePumpDuration >= 0) && (SubmersiblePumpDuration < (10 * 60) ) ) &&
+      ( (FishFeedDuration >= 0) && (FishFeedDuration < (10*60) ) ) )
       {
+        const SubmersiblePumpDurationMS = SubmersiblePumpDuration * 1000;
+        const FishFeedDurationMS = FishFeedDuration * 1000;
+
         const configuration = {
           TempLow: TempLow,
           TempHigh: TempHigh,
@@ -53,7 +63,9 @@ exports.controls_post = (req, res) => {
           PhHigh: PhHigh,
           DOLow: DOLow,
           DOHigh: DOHigh,
-          FishFreq: FishFreq
+          FishFreq: FishFreq,
+          PumpD: SubmersiblePumpDurationMS.toString(),
+          FishD: FishFeedDurationMS.toString()
         }
 
         //const message = TempLow.toString() + ' ' + TempHigh.toString();
@@ -74,7 +86,10 @@ exports.controls_post = (req, res) => {
             PhHigh: PhHigh,
             DOLow: DOLow,
             DOHigh: DOHigh,
-            FishFreq: FishFreq });
+            FishFreq: FishFreq,
+            SubmersiblePumpDuration: SubmersiblePumpDurationMS / 1000,
+            FishFeedDuration: FishFeedDurationMS / 1000
+            });
         });
       }
     
@@ -91,7 +106,10 @@ exports.controls_post = (req, res) => {
         PhHigh: controlConfig.PhHigh,
         DOLow: controlConfig.DOLow,
         DOHigh: controlConfig.DOHigh,
-        FishFreq: controlConfig.FishFreq});
+        FishFreq: controlConfig.FishFreq,
+        SubmersiblePumpDuration: controlConfig.PumpD / 1000,
+        FishFeedDuration: controlConfig.FishFeedD / 1000
+        });
     });
   }
 }
