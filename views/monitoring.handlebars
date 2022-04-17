@@ -470,7 +470,7 @@
         socket.on('WaterLevel', (data)=>
         {
             var payload = data.split(";");
-            $('#latest-WaterLevel').html('<h4 align="center">' + payload[1] + ' mg/L</h4>');
+            $('#latest-WaterLevel').html('<h4 align="center">' + payload[1] + ' cm</h4>');
         });
     });
 
