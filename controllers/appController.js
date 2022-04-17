@@ -6,14 +6,43 @@ const hivemqClient = require("../app_modules/hivemqtt.js");
 
 let isUserLoggedIn = false; 
 
+//TIME FORMMATING FUNCTION
+function getTimeofData(ValueOfDate, appendSeconds = true){
+    timeOfData = new Date(ValueOfDate);
+    hours = timeOfData.getHours().toString();
+    minutes = timeOfData.getMinutes().toString().padStart(2, '0');
+    seconds = timeOfData.getSeconds().toString().padStart(2, '0');
+    if(appendSeconds == true) return hours + ":" + minutes + ":" + seconds;
+    else return hours + ":" + minutes;
+}
+
 exports.landing_page = (req, res) => {
   isUserLoggedIn = req.session.isAuth;
-  res.render("index", { logged_in: isUserLoggedIn });
+  res.render("index", { logged_in: isUserLoggedIn,
+                        document_title: "Aquaponics Dashboard"
+                      });
 };
 
 exports.monitoring_get = (req, res) => {
   isUserLoggedIn = req.session.isAuth;
-  res.render('monitoring',{ logged_in: isUserLoggedIn });
+
+  fs.readFile('./config/feederStatus.json', (err,data)=> {
+    if (err) throw err;
+    const lastFeedTimeData = JSON.parse(data);
+    const lastfeedtime = getTimeofData(lastFeedTimeData.FeederOn, false);
+
+    fs.readFile('./config/controls.json', (err,data)=> {
+      if (err) throw err;
+      const message = JSON.parse(data);
+      const nextFeedTime = getTimeofData(lastFeedTimeData.FeederOn + ((24 * 60 * 60 * 1000)/message.FishFreq), false);
+
+      res.render('monitoring',{ logged_in: isUserLoggedIn,
+        lastFeedTime: lastfeedtime,
+        nextFeedTime: nextFeedTime,
+        document_title: "Monitoring"
+      });
+    });
+  });
 }
 
 exports.controls_get = (req, res) => {
@@ -23,7 +52,8 @@ exports.controls_get = (req, res) => {
     if (err) throw err;
     let controlConfig = JSON.parse(data);
 
-    res.render('controls',{ logged_in: isUserLoggedIn, 
+    res.render('controls',{ 
+      logged_in: isUserLoggedIn, 
       TempLow: controlConfig.TempLow,
       TempHigh: controlConfig.TempHigh,
       PhLow: controlConfig.PhLow,
@@ -32,7 +62,8 @@ exports.controls_get = (req, res) => {
       DOHigh: controlConfig.DOHigh,
       FishFreq: controlConfig.FishFreq,
       SubmersiblePumpDuration: controlConfig.PumpD / 1000,
-      FishFeedDuration: controlConfig.FishD / 1000
+      FishFeedDuration: controlConfig.FishD / 1000,
+      document_title: "Controls"
     });
   });
 }
@@ -88,7 +119,8 @@ exports.controls_post = (req, res) => {
             DOHigh: DOHigh,
             FishFreq: FishFreq,
             SubmersiblePumpDuration: SubmersiblePumpDurationMS / 1000,
-            FishFeedDuration: FishFeedDurationMS / 1000
+            FishFeedDuration: FishFeedDurationMS / 1000,
+            document_title: "Controls"
             });
         });
       }
@@ -108,7 +140,8 @@ exports.controls_post = (req, res) => {
         DOHigh: controlConfig.DOHigh,
         FishFreq: controlConfig.FishFreq,
         SubmersiblePumpDuration: controlConfig.PumpD / 1000,
-        FishFeedDuration: controlConfig.FishFeedD / 1000
+        FishFeedDuration: controlConfig.FishFeedD / 1000,
+        document_title: "Controls"
         });
     });
   }
@@ -121,7 +154,9 @@ exports.login_get = (req, res) => {
   isUserLoggedIn = req.session.isAuth;
   res.render("user_login/login_page", 
   { err: error, 
-    logged_in: false});
+    logged_in: false,
+    document_title: "Login"
+  });
 };
 
 exports.login_post = async (req, res) => {
@@ -158,7 +193,9 @@ exports.register_get = (req, res) => {
   delete req.session.error;
 
   isUserLoggedIn = req.session.isAuth;
-  res.render("user_login/registration_page", { logged_in: isUserLoggedIn });
+  res.render("user_login/registration_page", { logged_in: isUserLoggedIn,
+                                               document_title: "Register"
+                                              });
 };
 
 exports.register_post = async (req, res) => {
@@ -190,7 +227,9 @@ exports.dashboard_get = (req, res) => {
   isUserLoggedIn = req.session.isAuth;
   res.render("index", 
   { name: username,
-    logged_in: isUserLoggedIn});
+    logged_in: isUserLoggedIn,
+    document_title: "Aquaponics Dashboard"
+  });
 };
 
 exports.logout_post = (req, res) => {

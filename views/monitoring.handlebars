@@ -1,4 +1,5 @@
 <div class="container" style="font-family: 'Nanum Gothic', sans-serif;">
+    {{> waterlevel_fishfeed}}
     {{> temperature}}
     {{> phLevel}}
     {{> dissolvedOxygen}}
@@ -51,8 +52,8 @@
                     y: {
                         ticks: {suggestedMin: 15, suggestedMax: 37}
                     }
-                }
-            }
+                },
+            },
         });
 
         //TEMPERATURE PREDICTION
@@ -189,7 +190,7 @@
                 responsive: true,
                 title: {
                     display: true,
-                    text: 'Dissolved Oxygen (ppm)'
+                    text: 'Dissolved Oxygen (mg/L)'
                 },
                 scales: {
                     x: {
@@ -222,7 +223,7 @@
                 responsive: true,
                 title: {
                     display: true,
-                    text: 'Dissolved Oxygen (ppm)'
+                    text: 'Dissolved Oxygen (mg/L)'
                 },
                 scales: {
                     y: {
@@ -301,10 +302,11 @@
             // THIS WILL GET THE LAST VALUE OF THE VALUE ARRAY WHICH IS THE LATEST SENSOR VALUE
             $('#latest-temp').html('<h4 align="center">' + values[values.length-1].temperature + ' °C</h4>');
             $('#latest-pHLevel').html('<h4 align="center">' + values[values.length-1].pHLevel + '</h4>');
-            $('#latest-DOLevel').html('<h4 align="center">' + values[values.length-1].DOLevel + ' ppm</h4>');
+            $('#latest-DOLevel').html('<h4 align="center">' + values[values.length-1].DOLevel + ' mg/L</h4>');
+            $('#latest-WaterLevel').html('<h4 align="center">' + values[values.length-1].WaterHeight + ' cm</h4>');
             $('#avg-temp').html('<h4 align="center">' + (parseInt(tempChart.data.sum)/tempChart.data.datasets[0].data.length).toFixed(2) + ' °C</h4>');
             $('#avg-pHLevel').html('<h4 align="center">' + (parseInt(pHLevelChart.data.sum)/pHLevelChart.data.datasets[0].data.length).toFixed(2) + '</h4>');
-            $('#avg-DOLevel').html('<h4 align="center">' + (parseInt(DOLevelChart.data.sum)/DOLevelChart.data.datasets[0].data.length).toFixed(2) + ' ppm</h4>');
+            $('#avg-DOLevel').html('<h4 align="center">' + (parseInt(DOLevelChart.data.sum)/DOLevelChart.data.datasets[0].data.length).toFixed(2) + ' mg/L</h4>');
             }
         });
 
@@ -449,8 +451,8 @@
 
             var payload = data.split(";");
 
-            $('#latest-DOLevel').html('<h4 align="center">' + payload[1] + ' ppm</h4>');
-            $('#lasthour-DOLevel').prepend('<c><font size="2">' + "<" + payload[1] + " ppm>" + '</font></c>');
+            $('#latest-DOLevel').html('<h4 align="center">' + payload[1] + ' mg/L</h4>');
+            $('#lasthour-DOLevel').prepend('<c><font size="2">' + "<" + payload[1] + " mg/L>" + '</font></c>');
 
             DOLevelChart.data.datasets[0].data.push(payload[1]);
             DOLevelChart.data.labels.push(getTimeofData(payload[2]));
@@ -459,11 +461,17 @@
             var avg = (parseInt(DOLevelChart.data.sum)/DOLevelChart.data.datasets[0].data.length).toFixed(2);
             DOLevelChart.data.datasets[1].data.push(avg);
 
-            $('#avg-DOLevel').html('<h4 align="center">' + avg + ' ppm</h4>');
+            $('#avg-DOLevel').html('<h4 align="center">' + avg + ' mg/L</h4>');
 
             DOLevelChart.update();
         });
 
+        //WATER LEVEL
+        socket.on('WaterLevel', (data)=>
+        {
+            var payload = data.split(";");
+            $('#latest-WaterLevel').html('<h4 align="center">' + payload[1] + ' mg/L</h4>');
+        });
     });
 
 </script>

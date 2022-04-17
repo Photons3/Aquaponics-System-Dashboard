@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const mqtt = require('mqtt');
 const hiveclient = require("./hivemqtt.js");
+const fs = require("fs")
 
 //Include the Mongoose Models
 const SensorValues = require('../models/Sensor_Values');
@@ -108,8 +109,10 @@ module.exports = {
                     io.emit('pHLevel', ('ESP32' + ";" + message.PH + ";" + dateReceived).toString());
                     //DO LEVEL
                     io.emit('DOLevel', ('ESP32' + ";" + message.DO + ";" + dateReceived).toString());
+                    //WATER LEVEL
+                    io.emit('WaterLevel', ('ESP32' + ";" + message.WH + ";" + dateReceived).toString());
                 }
-
+                
                 if (topic == "/aquaponics/lspu/predictions")
                 {
                     const message = JSON.parse(messageReceived);
@@ -173,7 +176,22 @@ module.exports = {
             
                     //SEND THE PREDICTIONS TO CLIENT
                     io.emit('latestpredictions', message);
-                } 
+                }
+
+                if (topic == "/aquaponics/lspu/feederstatus")
+                {
+                    const dateReceived = Date.now();
+
+                    const message = {
+                        FeederOn: dateReceived
+                    };
+
+                    const toSave = JSON.stringify(message);
+                    
+                    fs.writeFile("./config/feederStatus.json", toSave, err=> {
+                        if (err) throw err;
+                    });
+                }
             };
 
             //setup the callbacks
@@ -191,6 +209,7 @@ module.exports = {
             // subscribe to topics
             hiveclient.subscribe('/aquaponics/lspu/sensors');
             hiveclient.subscribe('/aquaponics/lspu/predictions');
+            hiveclient.subscribe('/aquaponics/lspu/feederstatus');
         }
 
         listenForMessages();
