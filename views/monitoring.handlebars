@@ -322,7 +322,7 @@
             DOLevelChartPredict.data.labels = [];
 
             //THEN PLOT THE NEW INCOMING VALUES
-            timeToPush = (predictions[0].date+60)/1000;
+            timeToPush = (predictions[0].date+60);
             for(var i=0; i< predictions[0].temperature.length; i++){
                 tempChartPredict.data.datasets[0].data.push(predictions[0].temperature[i]);
                 tempChartPredict.data.labels.push(getTimeofData(timeToPush, false));
@@ -352,7 +352,7 @@
             DOLevelChartPredict.data.labels = [];
 
             //THEN PLOT THE NEW INCOMING VALUES
-            timeToPush = (predictions.date+60)/1000;
+            timeToPush = (predictions.date+60);
             for(var i=0; i< predictions.temperature.length; i++){
 
                 tempChartPredict.data.datasets[0].data.push(predictions.temperature[i]);

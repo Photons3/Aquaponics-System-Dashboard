@@ -128,7 +128,7 @@ module.exports = {
                     // const dateReceived = Date.parse(dateReceivedStr)/1000;
                     const dateReceived = Date.now()/1000;
 
-                    message.date = Date.now();
+                    message.date = dateReceived;
                     const newPredictionValuestoStore = new PredictionValues({
                         deviceId: 'ESP32',
                         date: dateReceived,
