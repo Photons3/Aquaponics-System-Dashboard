@@ -2,10 +2,10 @@
   "TempLow": "15",
   "TempHigh": "30",
   "PhLow": "6",
-  "PhHigh": "9",
-  "DOLow": "20",
-  "DOHigh": "40",
-  "FishFreq": "3",
+  "PhHigh": "8",
+  "DOLow": "15",
+  "DOHigh": "20",
+  "FishFreq": "1",
   "PumpD": "300000",
   "FishD": "5000"
 }
