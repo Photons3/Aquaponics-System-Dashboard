@@ -276,22 +276,22 @@
 
                     //FOR SENSOR CHARTS
                     tempChart.data.datasets[0].data.push(value.temperature);
-                    tempChart.data.sum = parseInt(tempChart.data.sum) + parseInt(value.temperature);
+                    tempChart.data.sum = parseFloat(tempChart.data.sum) + parseFloat(value.temperature);
                     tempChart.data.labels.push(getTimeofData(value.date));
 
-                    tempChart.data.datasets[1].data.push(parseInt(tempChart.data.sum)/tempChart.data.datasets[0].data.length);
+                    tempChart.data.datasets[1].data.push(parseFloat(tempChart.data.sum)/tempChart.data.datasets[0].data.length);
 
                     pHLevelChart.data.datasets[0].data.push(value.pHLevel);
-                    pHLevelChart.data.sum = parseInt(pHLevelChart.data.sum) + parseInt(value.pHLevel);
+                    pHLevelChart.data.sum = parseFloat(pHLevelChart.data.sum) + parseFloat(value.pHLevel);
                     pHLevelChart.data.labels.push(getTimeofData(value.date));
 
-                    pHLevelChart.data.datasets[1].data.push(parseInt(pHLevelChart.data.sum)/pHLevelChart.data.datasets[0].data.length);
+                    pHLevelChart.data.datasets[1].data.push(parseFloat(pHLevelChart.data.sum)/pHLevelChart.data.datasets[0].data.length);
 
                     DOLevelChart.data.datasets[0].data.push(value.DOLevel);
-                    DOLevelChart.data.sum = parseInt(DOLevelChart.data.sum) + parseInt(value.DOLevel);
+                    DOLevelChart.data.sum = parseFloat(DOLevelChart.data.sum) + parseFloat(value.DOLevel);
                     DOLevelChart.data.labels.push(getTimeofData(value.date));
 
-                    DOLevelChart.data.datasets[1].data.push(parseInt(DOLevelChart.data.sum)/DOLevelChart.data.datasets[0].data.length);
+                    DOLevelChart.data.datasets[1].data.push(parseFloat(DOLevelChart.data.sum)/DOLevelChart.data.datasets[0].data.length);
                 });
 
             tempChart.update();
@@ -394,8 +394,8 @@
             tempChart.data.datasets[0].data.push(payload[1]);
             tempChart.data.labels.push(getTimeofData(payload[2]));
 
-            tempChart.data.sum = parseInt(tempChart.data.sum) + parseInt(payload[1]);
-            var avg = (parseInt(tempChart.data.sum)/tempChart.data.datasets[0].data.length).toFixed(2);
+            tempChart.data.sum = parseFloat(tempChart.data.sum) + parseFloat(payload[1]);
+            var avg = (parseFloat(tempChart.data.sum)/tempChart.data.datasets[0].data.length).toFixed(2);
             tempChart.data.datasets[1].data.push(avg);
 
             $('#avg-temp').html('<h4 align="center">' + avg + ' °C</h4>');
@@ -424,8 +424,8 @@
             pHLevelChart.data.datasets[0].data.push(payload[1]);
             pHLevelChart.data.labels.push(getTimeofData(payload[2]));
 
-            pHLevelChart.data.sum = parseInt(pHLevelChart.data.sum) + parseInt(payload[1]);
-            var avg = (parseInt(pHLevelChart.data.sum)/pHLevelChart.data.datasets[0].data.length).toFixed(2);
+            pHLevelChart.data.sum = parseFloat(pHLevelChart.data.sum) + parseFloat(payload[1]);
+            var avg = (parseFloat(pHLevelChart.data.sum)/pHLevelChart.data.datasets[0].data.length).toFixed(2);
             pHLevelChart.data.datasets[1].data.push(avg);
 
             $('#avg-pHLevel').html('<h4 align="center">' + avg + '</h4>');
@@ -457,8 +457,8 @@
             DOLevelChart.data.datasets[0].data.push(payload[1]);
             DOLevelChart.data.labels.push(getTimeofData(payload[2]));
 
-            DOLevelChart.data.sum = parseInt(DOLevelChart.data.sum) + parseInt(payload[1]);
-            var avg = (parseInt(DOLevelChart.data.sum)/DOLevelChart.data.datasets[0].data.length).toFixed(2);
+            DOLevelChart.data.sum = parseFloat(DOLevelChart.data.sum) + parseFloat(payload[1]);
+            var avg = (parseFloat(DOLevelChart.data.sum)/DOLevelChart.data.datasets[0].data.length).toFixed(2);
             DOLevelChart.data.datasets[1].data.push(avg);
 
             $('#avg-DOLevel').html('<h4 align="center">' + avg + ' mg/L</h4>');
