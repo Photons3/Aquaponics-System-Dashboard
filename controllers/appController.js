@@ -81,7 +81,7 @@ exports.controls_post = (req, res) => {
   if ( ( (TempLow < TempHigh) && (DOLow < DOHigh) && (PhLow < PhHigh) ) &&
       ( (TempLow > 10) && (TempHigh < 40) ) && ( (DOLow > 0) && (DOHigh < 50) ) &&
       ( (PhLow > 2) && (PhHigh < 15) ) && ( (FishFreq > 0) && (FishFreq < 10) ) &&
-      ( (SubmersiblePumpDuration >= 0) && (SubmersiblePumpDuration < (10 * 60) ) ) &&
+      ( (SubmersiblePumpDuration >= 0) && (SubmersiblePumpDuration <= (10 * 60) ) ) &&
       ( (FishFeedDuration >= 0) && (FishFeedDuration < (10*60) ) ) )
       {
         const SubmersiblePumpDurationMS = SubmersiblePumpDuration * 1000;
