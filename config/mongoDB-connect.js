@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const db = "mongodb+srv://aquaponics:B4ViBVgXT7R09JG5@aquaponicsdb.ia1bi.mongodb.net/Aquaponics?retryWrites=true&w=majority"
+const db = "mongodb+srv://aquaponics:kkPtqtaAybCpbzk7@aquaponicssystem.nl36c.mongodb.net/?retryWrites=true&w=majority"
 
 const connectDB = async () => {
   try {

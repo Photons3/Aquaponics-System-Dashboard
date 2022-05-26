@@ -16,7 +16,7 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 
 // STORES THE SESSION IN MONGODB
 const store = new MongoDBStore({
-  uri: "mongodb+srv://aquaponics:B4ViBVgXT7R09JG5@aquaponicsdb.ia1bi.mongodb.net/Aquaponics?retryWrites=true&w=majority",
+  uri: "mongodb+srv://aquaponics:kkPtqtaAybCpbzk7@aquaponicssystem.nl36c.mongodb.net/?retryWrites=true&w=majority",
   collection: "userSessions",
 });
 
