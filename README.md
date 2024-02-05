@@ -2,6 +2,9 @@
 
 Dashboard for monitoring different sensor values from an aquaponics system using HiveMQ Broker, MongoDB and Node.JS
 
+# Code for the microcontroller can be accessed through github repository AquaponicsLSPUThesis
+https://github.com/Photons3/AquaponicsLSPUThesis
+
 Created from modules Pub/Sub, Mongoose, Handlebars, Express, Bootstrap 5 and brypt.
 
 **Features:**
